@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "219884143709",
+    "project_id": "rfidandroid-a73bd",
+    "storage_bucket": "rfidandroid-a73bd.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:219884143709:android:5183da29ccb35eb64bb9b4",
+        "android_client_info": {
+          "package_name": "com.example.rfif_android"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfuCzaly-x3a6IX0MUQHCjeBRrrQay7AE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

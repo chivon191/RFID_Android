@@ -1,0 +1,148 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:orientation="vertical"
+    tools:context=".homeFragment"
+    android:background="@color/background"
+    android:layout_marginStart="@dimen/margin_leftright"
+    android:layout_marginEnd="@dimen/margin_leftright"
+    android:layout_marginTop="@dimen/margin_topbot"
+    android:layout_marginBottom="@dimen/margin_topbot">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/profile_icon">
+
+            <ImageView
+                android:layout_width="@dimen/profile_icon"
+                android:layout_height="@dimen/profile_icon"
+                android:layout_gravity="end"
+                android:src="@drawable/avatar" />
+        </FrameLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hi, "
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_title"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Welcome to Your Home"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_large" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Smart Devices"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_large"
+            android:layout_marginTop="@dimen/marginw_title"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/marginw_item">
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            android:layout_weight="1"
+            android:padding="12dp"
+            android:background="@drawable/rounded_border">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/baseline_meeting_room_black_36"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Smart Door"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_medium"
+                    android:paddingStart="2dp"/>
+            </LinearLayout>
+
+            <!-- Switch ở góc dưới phải -->
+            <Switch
+                android:id="@+id/switch_door"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"/>
+
+        </FrameLayout>
+
+        <!-- Thiết bị Smart Light -->
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            android:layout_weight="1"
+            android:padding="12dp"
+            android:background="@drawable/rounded_border"
+            android:layout_marginStart="@dimen/marginw_item">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/baseline_speaker_black_36"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Smart Speaker"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_medium"
+                    android:paddingStart="2dp"/>
+            </LinearLayout>
+
+            <Switch
+                android:id="@+id/switch_light"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"/>
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Access History"
+        android:textSize="@dimen/text_large"
+        android:textColor="@color/black"
+        android:layout_marginTop="@dimen/marginw_item"/>
+
+    <ListView
+        android:id="@+id/accesslist"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.5" />
+
+</LinearLayout>
