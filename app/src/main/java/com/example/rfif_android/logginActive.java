@@ -3,11 +3,13 @@ package com.example.rfif_android;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -17,6 +19,11 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,90 +35,69 @@ public class logginActive extends AppCompatActivity {
     TextView tv8,tv9;
     ImageButton imgbtnback;
     Button btnlogin,btndagnhap;
-    String taikhoan,matkhau;
+    private FirebaseAuth mAuth;
 
-    DatabaseReference databaseReference;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_loggin_active);
 
-       imgbtnback=findViewById(R.id.imgback);
-       btnlogin=findViewById(R.id.btnlogin);
-       btndagnhap=findViewById(R.id.btndagnhap);
-       edttaikhoan=findViewById(R.id.edtaccount);
-       edtpass=findViewById(R.id.edtpass);
-        // tro ve trang dau
-       imgbtnback.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-               Intent myintent = new Intent(logginActive.this,MainActivity.class);
-               startActivity(myintent);
-           }
-       });
-       // nhan vao nut tao tai khoan
-       btnlogin.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-               Intent myintent = new Intent(logginActive.this,SIgnup_Activity.class);
-               startActivity(myintent);
-           }
-       });
+        imgbtnback=findViewById(R.id.imgback);
+        btnlogin=findViewById(R.id.btnlogin);
+        btndagnhap=findViewById(R.id.btndagnhap);
+        edttaikhoan=findViewById(R.id.edtaccount);
+        edtpass=findViewById(R.id.edtpass);
+        mAuth = FirebaseAuth.getInstance();
 
+        Intent intent = getIntent();
+        if (intent!=null) {
+            Bundle ex = intent.getExtras();
+            if (ex!=null){
+                edttaikhoan.setText(ex.getString("user"));
+                edtpass.setText(ex.getString("pass"));
+            }
+        }
 
-        FirebaseDatabase firebaseDatabase=FirebaseDatabase.getInstance();
-        databaseReference=firebaseDatabase.getReference("Account");
+        imgbtnback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myintent = new Intent(logginActive.this, MainActivity.class);
+                startActivity(myintent);
+            }
+        });
 
+        btnlogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myintent = new Intent(logginActive.this, SIgnup_Activity.class);
+                startActivity(myintent);
+            }
+        });
 
-        // nhan vao nut dang nhap khi nhap tai khoan mk
         btndagnhap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                taikhoan=edttaikhoan.getText().toString();
-                matkhau=edtpass.getText().toString();
-                // kiem tra neu tai khoan trong
-                if(taikhoan.isEmpty()){
-                    edttaikhoan.setError("Tai khoan khong duoc de trong");
-                    return;
-                }
-                if(matkhau.isEmpty()){
-                    edtpass.setError("mat khau khong duoc de trong");
-                    return;
-                }
-                //kiem tra tai khoan va mat khau trong firebase
-                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        boolean adviseconnect=false;
-                        // duyet qua tung con trong moi
-                        for(DataSnapshot nut:snapshot.getChildren()){
-                            String storetaikhoan=nut.child("Taikhoan").getValue(String.class);
-                            String storematkhau=nut.child("Matkhau").getValue(String.class);
-                            if(storetaikhoan!=null&&storematkhau!=null&&taikhoan.equals(storetaikhoan)&&matkhau.equals(storematkhau)){
-                                adviseconnect=true;
-                                break;
+                String user = edttaikhoan.getText().toString();
+                String pass = edtpass.getText().toString();
+
+                if (user.isEmpty() || pass.isEmpty()) {
+                    Toast.makeText(logginActive.this, "Please fill in all fields", Toast.LENGTH_LONG).show();
+                } else {
+                    mAuth.signInWithEmailAndPassword(user, pass).addOnCompleteListener(logginActive.this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                Toast.makeText(logginActive.this, "Login succesfull", Toast.LENGTH_SHORT).show();
+                                Intent it = new Intent(logginActive.this, giaodien1.class);
+                                startActivity(it);
+                            } else {
+                                Log.w("Main", "signInWithEmail:failure", task.getException());
+                                Toast.makeText(logginActive.this, "Fail username or password!", Toast.LENGTH_SHORT).show();
                             }
                         }
-                        if(adviseconnect==true){
-                            Intent myintent = new Intent(logginActive.this, giaodien1.class);
-                            startActivity(myintent);
-                        }else{
-                            AlertDialog.Builder builder = new AlertDialog.Builder(logginActive.this);
-                            builder.setMessage("tai khoan khong hop le").setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.dismiss();
-                                }
-                            });
-                            builder.create().show();
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
+                    });
+                }
             }
         });
 
