@@ -8,6 +8,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,11 @@ import android.widget.Toast;
 
 import com.example.rfif_android.models.AccessCard;
 import com.google.android.material.button.MaterialButtonToggleGroup;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,11 +37,12 @@ public class cardFragment extends Fragment {
     private String mParam2;
 
     private TextView tv_getid;
-    private TextView tv_cardid;
+    private EditText tv_cardid;
     private Button btn_save;
     private EditText edt_cardname;
     private List<AccessCard> cardList;
     private AdapterListCard adapterListCard;
+    private DatabaseReference databaseReference;
 
     public cardFragment() {}
 
@@ -72,6 +79,8 @@ public class cardFragment extends Fragment {
         adapterListCard = new AdapterListCard(requireContext(), cardList);
         listView.setAdapter(adapterListCard);
 
+        databaseReference = FirebaseDatabase.getInstance().getReference("access_card");
+
         tv_getid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -92,9 +101,12 @@ public class cardFragment extends Fragment {
                 if (id.isEmpty() || name.isEmpty()) {
                     Toast.makeText(requireContext(), "ID or Name is empty!", Toast.LENGTH_SHORT).show();
                 } else {
+                    DatabaseReference newCard = databaseReference.push();
+                    newCard.child("id").setValue(id);
+                    newCard.child("name").setValue(name);
+                    tv_cardid.setText("");
+                    edt_cardname.setText("");
                     Toast.makeText(requireContext(), "Saved", Toast.LENGTH_LONG).show();
-                    cardList.add(new AccessCard(id, name));
-                    adapterListCard.notifyDataSetChanged();
                 }
             }
         });
@@ -104,6 +116,25 @@ public class cardFragment extends Fragment {
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 showDialogItem(i);
                 return false;
+            }
+        });
+
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                cardList.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    AccessCard card = snapshot.getValue(AccessCard.class);
+                    if (card != null) {
+                        cardList.add(card);
+                    }
+                }
+                adapterListCard.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("Firebase", "Lỗi khi đọc dữ liệu", databaseError.toException());
             }
         });
         
@@ -146,10 +177,16 @@ public class cardFragment extends Fragment {
                 String newName = editTextName.getText().toString().trim();
 
                 if (!newIdStr.isEmpty() && !newName.isEmpty()) {
-                    currentItem.setId(newIdStr);
-                    currentItem.setName(newName);
-
-                    adapterListCard.notifyDataSetChanged();
+                    getItemKeyById(currentItem.getId(), new OnKeyRetrievedListener() {
+                        @Override
+                        public void onKeyRetrieved(String key) {
+                            if (key != null) {
+                                DatabaseReference itemRef = databaseReference.child(key);
+                                itemRef.child("id").setValue(newIdStr);
+                                itemRef.child("name").setValue(newName);
+                            }
+                        }
+                    });
                     Toast.makeText(requireContext(), "Đã cập nhật", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(requireContext(), "ID và Name không được để trống!", Toast.LENGTH_SHORT).show();
@@ -163,7 +200,43 @@ public class cardFragment extends Fragment {
 
 
     private void deleteItem(int position) {
-        cardList.remove(position);
-        adapterListCard.notifyDataSetChanged();
+        AccessCard itemtoDelete = cardList.get(position);
+        getItemKeyById(itemtoDelete.getId(), new OnKeyRetrievedListener() {
+            @Override
+            public void onKeyRetrieved(String key) {
+                if (key != null) {
+                    databaseReference.child(key).removeValue();
+                    Toast.makeText(requireContext(), "Đã xóa khỏi Firebase!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(requireContext(), "Không tìm thấy item để xóa!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private void getItemKeyById(String id, OnKeyRetrievedListener listener) {
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    AccessCard item = snapshot.getValue(AccessCard.class);
+                    if (item != null && item.getId().equals(id)) {
+                        listener.onKeyRetrieved(snapshot.getKey());
+                        return;
+                    }
+                }
+                listener.onKeyRetrieved(null);  // Nếu không tìm thấy
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("Firebase", "Lỗi khi đọc dữ liệu", databaseError.toException());
+            }
+        });
+    }
+
+    // Listener để trả về key
+    public interface OnKeyRetrievedListener {
+        void onKeyRetrieved(String key);
     }
 }

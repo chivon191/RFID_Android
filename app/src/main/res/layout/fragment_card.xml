@@ -32,7 +32,7 @@
             android:text="Card ID: "
             android:textSize="16sp" />
 
-        <TextView
+        <EditText
             android:id="@+id/tv_card_id"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

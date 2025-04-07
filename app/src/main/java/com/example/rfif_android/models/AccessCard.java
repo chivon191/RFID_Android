@@ -4,6 +4,8 @@ public class AccessCard {
     private String id;
     private String name;
 
+    public AccessCard() {}
+
     public AccessCard(String id, String name) {
         this.id = id;
         this.name = name;
