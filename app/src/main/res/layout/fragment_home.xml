@@ -128,21 +128,6 @@
                 android:layout_gravity="bottom|end"/>
 
         </FrameLayout>
-
     </LinearLayout>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Access History"
-        android:textSize="@dimen/text_large"
-        android:textColor="@color/black"
-        android:layout_marginTop="@dimen/marginw_item"/>
-
-    <ListView
-        android:id="@+id/accesslist"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1.5" />
 
 </LinearLayout>

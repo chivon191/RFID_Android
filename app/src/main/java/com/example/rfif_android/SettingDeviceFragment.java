@@ -10,10 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class homeFragment extends Fragment {
-
-    public homeFragment() {
-        super(R.layout.fragment_home);
+public class SettingDeviceFragment extends Fragment {
+    public SettingDeviceFragment() {
+        super(R.layout.fragment_setting_device);
     }
 
     @Override

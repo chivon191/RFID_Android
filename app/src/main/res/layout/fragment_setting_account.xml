@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="#FFFFFF"
+    android:padding="24dp"
+    tools:context=".SettingAccountFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Change account password"
+            android:textSize="@dimen/text_title"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginBottom="@dimen/marginw_title" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Your new password must be different from previous used passwords."
+            android:textSize="@dimen/text_medium"
+            android:layout_marginBottom="@dimen/marginw_item"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Email"
+            android:textColor="#555555"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/etEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:drawable/edit_text"
+            android:padding="10dp"
+            android:inputType="textEmailAddress"
+            android:hint="Enter your email"
+            android:textSize="@dimen/text_medium"
+            android:textColor="#000000"
+            android:layout_marginBottom="@dimen/marginw_item" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Current password"
+            android:textColor="#555555"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/etCurrentPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:drawable/edit_text"
+            android:padding="10dp"
+            android:inputType="textPassword"
+            android:textColor="#000000"
+            android:hint="Enter your current password"
+            android:textSize="@dimen/text_medium"
+            android:layout_marginBottom="@dimen/marginw_item" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="New password"
+            android:textColor="#555555"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/etNewPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:drawable/edit_text"
+            android:padding="10dp"
+            android:inputType="textPassword"
+            android:hint="Enter new password"
+            android:textSize="@dimen/text_medium"
+            android:textColor="#000000"
+            android:layout_marginBottom="32dp" />
+
+        <Button
+            android:id="@+id/btnChangePassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Confirm change password"
+            android:background="#1E88E5"
+            android:textColor="#FFFFFF"
+            android:padding="12dp" />
+    </LinearLayout>
+</ScrollView>
