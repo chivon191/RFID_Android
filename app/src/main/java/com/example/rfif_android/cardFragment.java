@@ -36,13 +36,12 @@ public class cardFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private TextView tv_getid;
-    private EditText tv_cardid;
+    private TextView tv_getid, tv_cardid;
     private Button btn_save;
     private EditText edt_cardname;
     private List<AccessCard> cardList;
     private AdapterListCard adapterListCard;
-    private DatabaseReference databaseReference;
+    private DatabaseReference databaseReference, controlRef, idsRef;
 
     public cardFragment() {}
 
@@ -80,14 +79,37 @@ public class cardFragment extends Fragment {
         listView.setAdapter(adapterListCard);
 
         databaseReference = FirebaseDatabase.getInstance().getReference("access_card");
+        controlRef = FirebaseDatabase.getInstance().getReference("nfc_control");
+        idsRef = FirebaseDatabase.getInstance().getReference("nfc_ids");
 
         tv_getid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                controlRef.child("command").setValue("read_nfc").addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        tv_cardid.setText("NFC ID: Waiting...");
+                    } else {
+                        tv_cardid.setText("Error: Failed to send command");
+                    }
+                });
                 Toast.makeText(requireContext(), "Send message to hardware for getID", Toast.LENGTH_SHORT).show();
-                cardList.add(new AccessCard("6AHG87", "Chi Von"));
-                cardList.add(new AccessCard("663A87", "Huu Tien"));
-                adapterListCard.notifyDataSetChanged();
+            }
+        });
+
+        idsRef.orderByKey().limitToLast(1).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String nfcID = snapshot.getValue(String.class);
+                    if (nfcID != null) {
+                        tv_cardid.setText(nfcID);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                tv_cardid.setText("Error: " + databaseError.getMessage());
             }
         });
 

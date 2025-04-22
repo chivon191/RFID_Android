@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:background="@android:drawable/edit_text"
             android:padding="10dp"
-            android:inputType="textPassword"
+            android:inputType="numberPassword"
             android:textColor="#000000"
             android:hint="Enter your current PIN"
             android:textSize="@dimen/text_medium"
@@ -62,7 +62,7 @@
             android:layout_height="wrap_content"
             android:background="@android:drawable/edit_text"
             android:padding="10dp"
-            android:inputType="textPassword"
+            android:inputType="numberPassword"
             android:hint="Enter new PIN"
             android:textSize="@dimen/text_medium"
             android:textColor="#000000"
@@ -73,7 +73,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Confirm change PINCODE"
-            android:background="#1E88E5"
+            android:background="@drawable/buton_signup"
             android:textColor="#FFFFFF"
             android:padding="12dp" />
     </LinearLayout>

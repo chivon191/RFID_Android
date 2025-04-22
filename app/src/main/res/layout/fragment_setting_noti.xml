@@ -1,0 +1,192 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".SettingNotiFragment"
+    android:background="@drawable/backrounft">
+
+    <!-- Bật/Tắt thông báo -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="10dp"
+        >
+
+        <ImageView
+            android:id="@+id/imageView10"
+            android:layout_width="88dp"
+            android:layout_height="50dp"
+            android:src="@drawable/setting_white" />
+
+        <TextView
+            android:id="@+id/textView26"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="22dp"
+            android:text="Setting notification"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:layout_gravity="center"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/backround_cong"
+        android:orientation="vertical">
+
+        <Switch
+            android:id="@+id/notification_switch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:checked="true"
+            android:text="Bật/Tắt Thông Báo"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Âm thanh thông báo"
+            android:textSize="16sp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginRight="5dp"/>
+
+        <Spinner
+            android:id="@+id/sound_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"/>
+
+        <Switch
+            android:id="@+id/vibration_switch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:checked="false"
+            android:text="Rung khi có thông báo"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"/>
+
+        <TextView
+            android:id="@+id/textView29"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Tùy chỉnh thông báo"
+            android:textSize="16sp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"/>
+
+        <CheckBox
+            android:id="@+id/alert_checkbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Cảnh báo RFID không hợp lệ"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            />
+
+        <CheckBox
+            android:id="@+id/reminder_checkbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Nhắc nhở RFID"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@drawable/backround_cong">
+
+            <LinearLayout
+                android:layout_width="398dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/stats_title"
+                    android:layout_width="328dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="15dp"
+
+                    android:text="Thống kê thông báo"
+                    android:gravity="center"
+                    android:textColor="@color/black"
+                    android:textSize="22sp" />
+
+                <ImageView
+                    android:id="@+id/imageView13"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:src="@drawable/notifi"
+                    android:layout_marginTop="5dp"/>
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/total_notifications"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tổng số thông báo: 0"
+                android:textSize="15sp"
+                android:textColor="@color/black"
+                android:layout_marginLeft="10dp"
+                android:layout_marginBottom="10dp"
+                />
+
+
+            <TextView
+                android:id="@+id/alert_notifications"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Cảnh báo RFID không hợp lệ: 0"
+                android:layout_marginLeft="10dp"
+                android:textSize="15sp"
+                android:textColor="@color/black"
+                android:layout_marginBottom="10dp" />
+
+            <TextView
+                android:id="@+id/reminder_notifications"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Nhắc nhở RFID: 0"
+                android:textSize="15sp"
+                android:layout_marginLeft="10dp"
+                android:textColor="@color/black"
+                android:layout_marginBottom="50dp" />
+
+
+            <Button
+                android:id="@+id/update_stats_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Cập nhật thống kê"
+                android:background="@drawable/buton_signup"
+                app:backgroundTint="@null"
+                android:textColor="@color/white"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_gravity="bottom"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>

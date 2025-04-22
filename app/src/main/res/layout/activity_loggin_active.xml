@@ -56,7 +56,7 @@
             android:layout_weight="1"
             android:ems="10"
             android:hint="Password"
-            android:inputType="text" />
+            android:inputType="textPassword" />
 
         <ImageView
             android:id="@+id/imageView3"

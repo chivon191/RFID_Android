@@ -37,7 +37,7 @@ public class settingFragment extends Fragment {
         device.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                getParentFragmentManager().beginTransaction().replace(R.id.fragment_container, new SettingDeviceFragment()).addToBackStack(null).commit();
             }
         });
 

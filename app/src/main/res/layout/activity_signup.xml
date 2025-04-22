@@ -67,7 +67,7 @@
                 android:layout_height="match_parent"
                 android:ems="10"
                 android:hint="Password"
-                android:inputType="text" />
+                android:inputType="textPassword" />
 
             <ImageView
                 android:id="@+id/imageView5"
@@ -87,7 +87,7 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="Confirm Password"
-                android:inputType="text" />
+                android:inputType="textPassword" />
 
             <ImageView
                 android:id="@+id/imageView6"
