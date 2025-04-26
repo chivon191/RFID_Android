@@ -108,7 +108,7 @@
             app:backgroundTint="@null" />
 
         <Space
-            android:layout_width="match_parent"
+            android:layout_width="422dp"
             android:layout_height="218dp" />
     </LinearLayout>
 
@@ -125,33 +125,6 @@
             android:textAlignment="center"
             android:textColor="#FAF0F0"
             android:textSize="15dp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center">
-
-        <ImageButton
-            android:id="@+id/imgfb"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_weight="0"
-            android:backgroundTint="#00E8E6E9"
-            android:scaleType="fitCenter"
-            android:layout_gravity="center"
-            app:srcCompat="@drawable/fb__1_" />
-
-        <ImageButton
-            android:id="@+id/imgig"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:layout_weight="0"
-            android:backgroundTint="#00E8E6E9"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/ig" />
     </LinearLayout>
 
 </LinearLayout>

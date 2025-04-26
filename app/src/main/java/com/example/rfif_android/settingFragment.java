@@ -13,7 +13,7 @@ import android.widget.ImageView;
 
 public class settingFragment extends Fragment {
 
-    private ImageView account, device, app, noti;
+    private ImageView account, device, noti;
     public settingFragment() {
         super(R.layout.fragment_setting);
     }
@@ -24,7 +24,6 @@ public class settingFragment extends Fragment {
 
         account = view.findViewById(R.id.arr_account);
         device = view.findViewById(R.id.arr_devices);
-        app = view.findViewById(R.id.arr_app);
         noti = view.findViewById(R.id.arr_noti);
 
         account.setOnClickListener(new View.OnClickListener() {
@@ -40,18 +39,10 @@ public class settingFragment extends Fragment {
                 getParentFragmentManager().beginTransaction().replace(R.id.fragment_container, new SettingDeviceFragment()).addToBackStack(null).commit();
             }
         });
-
-        app.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-
         noti.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                getParentFragmentManager().beginTransaction().replace(R.id.fragment_container, new SettingNotiFragment()).addToBackStack(null).commit();
             }
         });
     }

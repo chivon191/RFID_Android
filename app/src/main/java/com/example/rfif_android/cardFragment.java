@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
@@ -82,38 +83,71 @@ public class cardFragment extends Fragment {
         controlRef = FirebaseDatabase.getInstance().getReference("nfc_control");
         idsRef = FirebaseDatabase.getInstance().getReference("nfc_ids");
 
+//        tv_getid.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                controlRef.child("command").setValue("read_nfc").addOnCompleteListener(task -> {
+//                    if (task.isSuccessful()) {
+//                        tv_cardid.setText("NFC ID: Waiting...");
+//                    } else {
+//                        tv_cardid.setText("Error: Failed to send command");
+//                    }
+//                });
+//                Toast.makeText(requireContext(), "Send message to hardware for getID", Toast.LENGTH_SHORT).show();
+//            }
+//        });
+
+//        idsRef.orderByKey().limitToLast(1).addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+//                    String nfcID = snapshot.getValue(String.class);
+//                    if (nfcID != null) {
+//                        tv_cardid.setText(nfcID);
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                tv_cardid.setText("Error: " + databaseError.getMessage());
+//            }
+//        });
+
         tv_getid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 controlRef.child("command").setValue("read_nfc").addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         tv_cardid.setText("NFC ID: Waiting...");
+                        Toast.makeText(requireContext(), "Sent command, waiting for NFC ID...", Toast.LENGTH_SHORT).show();
+
+                        // Bây giờ bắt đầu lắng nghe NFC ID trả về
+                        idsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                String nfcId = snapshot.getValue(String.class);
+                                if (nfcId != null && !nfcId.isEmpty()) {
+                                    tv_cardid.setText(nfcId);
+                                } else {
+                                    tv_cardid.setText("NFC ID: Not Found");
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                tv_cardid.setText("Error: " + error.getMessage());
+                            }
+                        });
+
                     } else {
                         tv_cardid.setText("Error: Failed to send command");
+                        Toast.makeText(requireContext(), "Failed to send command", Toast.LENGTH_SHORT).show();
                     }
                 });
-                Toast.makeText(requireContext(), "Send message to hardware for getID", Toast.LENGTH_SHORT).show();
             }
         });
 
-        idsRef.orderByKey().limitToLast(1).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    String nfcID = snapshot.getValue(String.class);
-                    if (nfcID != null) {
-                        tv_cardid.setText(nfcID);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                tv_cardid.setText("Error: " + databaseError.getMessage());
-            }
-        });
-
-        
         btn_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -123,12 +157,20 @@ public class cardFragment extends Fragment {
                 if (id.isEmpty() || name.isEmpty()) {
                     Toast.makeText(requireContext(), "ID or Name is empty!", Toast.LENGTH_SHORT).show();
                 } else {
-                    DatabaseReference newCard = databaseReference.push();
-                    newCard.child("id").setValue(id);
-                    newCard.child("name").setValue(name);
-                    tv_cardid.setText("");
-                    edt_cardname.setText("");
-                    Toast.makeText(requireContext(), "Saved", Toast.LENGTH_LONG).show();
+                    new AlertDialog.Builder(requireContext())
+                            .setTitle("Xác nhận lưu")
+                            .setMessage("Bạn có chắc chắn muốn lưu thẻ này?")
+                            .setPositiveButton("Lưu", (dialog, which) -> {
+                                DatabaseReference newCard = databaseReference.push();
+                                newCard.child("id").setValue(id);
+                                newCard.child("name").setValue(name);
+                                tv_cardid.setText("");
+                                edt_cardname.setText("");
+                                controlRef.child("command").setValue("update_card");
+                                Toast.makeText(requireContext(), "Đã lưu", Toast.LENGTH_LONG).show();
+                            })
+                            .setNegativeButton("Hủy", null)
+                            .show();
                 }
             }
         });
@@ -179,61 +221,75 @@ public class cardFragment extends Fragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setTitle("Edit Item");
 
-        // Inflate layout
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_edit_item, null);
         builder.setView(dialogView);
 
-        // Ánh xạ EditText từ layout
         EditText editTextID = dialogView.findViewById(R.id.edittext_edit_id);
         EditText editTextName = dialogView.findViewById(R.id.edittext_edit_name);
 
-        // Lấy thông tin item hiện tại
         AccessCard currentItem = cardList.get(position);
-        editTextID.setText(currentItem.getId()); // Hiển thị ID
-        editTextName.setText(currentItem.getName()); // Hiển thị Name
+        editTextID.setText(currentItem.getId());
+        editTextName.setText(currentItem.getName());
 
-        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String newIdStr = editTextID.getText().toString().trim();
-                String newName = editTextName.getText().toString().trim();
+        builder.setPositiveButton("Save", null);
+        builder.setNegativeButton("Cancel", null);
 
-                if (!newIdStr.isEmpty() && !newName.isEmpty()) {
-                    getItemKeyById(currentItem.getId(), new OnKeyRetrievedListener() {
-                        @Override
-                        public void onKeyRetrieved(String key) {
-                            if (key != null) {
-                                DatabaseReference itemRef = databaseReference.child(key);
-                                itemRef.child("id").setValue(newIdStr);
-                                itemRef.child("name").setValue(newName);
-                            }
-                        }
-                    });
-                    Toast.makeText(requireContext(), "Đã cập nhật", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(requireContext(), "ID và Name không được để trống!", Toast.LENGTH_SHORT).show();
-                }
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            String newIdStr = editTextID.getText().toString().trim();
+            String newName = editTextName.getText().toString().trim();
+
+            if (!newIdStr.isEmpty() && !newName.isEmpty()) {
+                new AlertDialog.Builder(requireContext())
+                        .setTitle("Xác nhận chỉnh sửa")
+                        .setMessage("Bạn có chắc chắn muốn cập nhật thẻ này?")
+                        .setPositiveButton("Cập nhật", (confirmDialog, which) -> {
+                            getItemKeyById(currentItem.getId(), new OnKeyRetrievedListener() {
+                                @Override
+                                public void onKeyRetrieved(String key) {
+                                    if (key != null) {
+                                        DatabaseReference itemRef = databaseReference.child(key);
+                                        itemRef.child("id").setValue(newIdStr);
+                                        itemRef.child("name").setValue(newName);
+                                        controlRef.child("command").setValue("update_card");
+                                        Toast.makeText(requireContext(), "Đã cập nhật", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                            dialog.dismiss();
+                        })
+                        .setNegativeButton("Hủy", null)
+                        .show();
+            } else {
+                Toast.makeText(requireContext(), "Không được để trống ID hoặc Tên", Toast.LENGTH_SHORT).show();
             }
         });
-
-        builder.setNegativeButton("Cancel", null);
-        builder.show();
     }
 
 
     private void deleteItem(int position) {
-        AccessCard itemtoDelete = cardList.get(position);
-        getItemKeyById(itemtoDelete.getId(), new OnKeyRetrievedListener() {
-            @Override
-            public void onKeyRetrieved(String key) {
-                if (key != null) {
-                    databaseReference.child(key).removeValue();
-                    Toast.makeText(requireContext(), "Đã xóa khỏi Firebase!", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(requireContext(), "Không tìm thấy item để xóa!", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+        AccessCard itemToDelete = cardList.get(position);
+
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Xác nhận xóa")
+                .setMessage("Bạn có chắc chắn muốn xóa thẻ này?")
+                .setPositiveButton("Xóa", (dialog, which) -> {
+                    getItemKeyById(itemToDelete.getId(), new OnKeyRetrievedListener() {
+                        @Override
+                        public void onKeyRetrieved(String key) {
+                            if (key != null) {
+                                DatabaseReference itemRef = databaseReference.child(key);
+                                itemRef.removeValue();
+                                controlRef.child("command").setValue("update_card");
+                                Toast.makeText(requireContext(), "Đã xóa", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                })
+                .setNegativeButton("Hủy", null)
+                .show();
     }
 
     private void getItemKeyById(String id, OnKeyRetrievedListener listener) {
@@ -257,7 +313,6 @@ public class cardFragment extends Fragment {
         });
     }
 
-    // Listener để trả về key
     public interface OnKeyRetrievedListener {
         void onKeyRetrieved(String key);
     }

@@ -88,34 +88,6 @@
         <ImageView
             android:layout_width="@dimen/icon_size"
             android:layout_height="@dimen/icon_size"
-            android:src="@drawable/appsetting" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="App Settings"
-            android:textSize="@dimen/text_medium"
-            android:layout_marginStart="20dp"
-            android:gravity="center_vertical"/>
-
-        <ImageView
-            android:id="@+id/arr_app"
-            android:layout_width="@dimen/icon_size"
-            android:layout_height="@dimen/icon_size"
-            android:src="@drawable/right_arrow"
-            android:gravity="end"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="@dimen/marginw_item">
-
-        <ImageView
-            android:layout_width="@dimen/icon_size"
-            android:layout_height="@dimen/icon_size"
             android:src="@drawable/baseline_notifications_active_black_36" />
 
         <TextView

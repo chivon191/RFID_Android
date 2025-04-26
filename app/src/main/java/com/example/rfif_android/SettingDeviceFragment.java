@@ -22,7 +22,7 @@ import com.google.firebase.database.ValueEventListener;
 public class SettingDeviceFragment extends Fragment {
     private EditText etCurrentPin, etNewPin;
     private Button btnChangePin;
-    private DatabaseReference passwordRef;
+    private DatabaseReference passwordRef, controlRef;
 
     public SettingDeviceFragment() {
         super(R.layout.fragment_setting_device);
@@ -36,6 +36,7 @@ public class SettingDeviceFragment extends Fragment {
         etNewPin = view.findViewById(R.id.etNewPin);
         btnChangePin = view.findViewById(R.id.btnChangePin);
         passwordRef = FirebaseDatabase.getInstance().getReference("password");
+        controlRef = FirebaseDatabase.getInstance().getReference("nfc_control");
 
         btnChangePin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,9 +54,9 @@ public class SettingDeviceFragment extends Fragment {
                     return;
                 }
 
-                // Kiểm tra định dạng PIN mới (ví dụ: chỉ số, độ dài 4-6 chữ số)
-                if (!newPin.matches("\\d{4,6}")) {
-                    Toast.makeText(requireContext(), "Mật khẩu mới phải là số và có 4-6 chữ số", Toast.LENGTH_SHORT).show();
+                // Kiểm tra định dạng PIN mới (ví dụ: chỉ số, độ dài 4 chữ số)
+                if (!newPin.matches("\\d{4}")) {
+                    Toast.makeText(requireContext(), "Mật khẩu mới phải là số và có 4 chữ số", Toast.LENGTH_SHORT).show();
                     btnChangePin.setEnabled(true);
                     return;
                 }
@@ -87,6 +88,7 @@ public class SettingDeviceFragment extends Fragment {
                                         Toast.makeText(getContext(), "Cập nhật mật khẩu mới thành công!", Toast.LENGTH_SHORT).show();
                                         etCurrentPin.setText("");
                                         etNewPin.setText("");
+                                        controlRef.child("command").setValue("update_password");
                                     } else {
                                         Toast.makeText(getContext(), "Lỗi khi cập nhật: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
                                     }
